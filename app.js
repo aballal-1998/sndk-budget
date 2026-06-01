@@ -16,6 +16,99 @@ const CAT_ICON = { Food: '🍔', Transport: '🚗', Misc: '📦' };
 let currentCategory = 'Food';
 let amountStr = '0';
 
+// ===== PIN =====
+let pinEntry = '';
+let pinMode = 'unlock'; // 'unlock' | 'setup' | 'confirm'
+let pinSetupFirst = '';
+
+async function hashPin(pin) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function initPin() {
+  const stored = localStorage.getItem('sndk_pin');
+  if (!stored) {
+    pinMode = 'setup';
+    document.getElementById('pin-title').textContent = 'Set a PIN';
+  } else {
+    pinMode = 'unlock';
+    document.getElementById('pin-title').textContent = 'Enter PIN';
+  }
+}
+
+function pinInput(digit) {
+  if (pinEntry.length >= 4) return;
+  pinEntry += digit;
+  updatePinDots();
+  if (pinEntry.length === 4) {
+    setTimeout(() => handlePinSubmit(), 120);
+  }
+}
+
+function pinDelete() {
+  pinEntry = pinEntry.slice(0, -1);
+  updatePinDots();
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('dot-' + i).classList.toggle('filled', i < pinEntry.length);
+  }
+}
+
+async function handlePinSubmit() {
+  if (pinMode === 'setup') {
+    pinSetupFirst = pinEntry;
+    pinEntry = '';
+    updatePinDots();
+    pinMode = 'confirm';
+    document.getElementById('pin-title').textContent = 'Confirm PIN';
+    document.getElementById('pin-error').textContent = '';
+    return;
+  }
+
+  if (pinMode === 'confirm') {
+    if (pinEntry === pinSetupFirst) {
+      const hashed = await hashPin(pinEntry);
+      localStorage.setItem('sndk_pin', hashed);
+      unlockApp();
+    } else {
+      showPinError('PINs don\'t match. Try again.');
+      pinMode = 'setup';
+      pinSetupFirst = '';
+      document.getElementById('pin-title').textContent = 'Set a PIN';
+    }
+    return;
+  }
+
+  if (pinMode === 'unlock') {
+    const stored = localStorage.getItem('sndk_pin');
+    const hashed = await hashPin(pinEntry);
+    if (hashed === stored) {
+      unlockApp();
+    } else {
+      showPinError('Incorrect PIN');
+    }
+  }
+}
+
+function showPinError(msg) {
+  pinEntry = '';
+  updatePinDots();
+  const dots = document.getElementById('pin-dots');
+  const err = document.getElementById('pin-error');
+  err.textContent = msg;
+  dots.classList.add('shake');
+  setTimeout(() => { dots.classList.remove('shake'); }, 400);
+  setTimeout(() => { err.textContent = ''; }, 2500);
+}
+
+function unlockApp() {
+  pinEntry = '';
+  document.getElementById('pin-screen').classList.add('hidden');
+}
+
 // ===== STORAGE =====
 function getExpenses() {
   return JSON.parse(localStorage.getItem('sndk_expenses') || '[]');
@@ -236,10 +329,10 @@ function escHtml(str) {
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
-  // Set today's date as default
   document.getElementById('expense-date').value = new Date().toISOString().slice(0, 10);
 
-  // Register service worker for offline support
+  initPin();
+
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }

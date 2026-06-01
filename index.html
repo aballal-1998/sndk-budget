@@ -14,6 +14,33 @@
 </head>
 <body>
 
+  <!-- PIN SCREEN -->
+  <div id="pin-screen" class="pin-screen">
+    <div class="pin-logo">SNDK</div>
+    <div id="pin-title" class="pin-title">Enter PIN</div>
+    <div id="pin-dots" class="pin-dots">
+      <div class="pin-dot" id="dot-0"></div>
+      <div class="pin-dot" id="dot-1"></div>
+      <div class="pin-dot" id="dot-2"></div>
+      <div class="pin-dot" id="dot-3"></div>
+    </div>
+    <div id="pin-error" class="pin-error"></div>
+    <div class="pin-numpad">
+      <button class="pin-num-btn" onclick="pinInput('1')">1</button>
+      <button class="pin-num-btn" onclick="pinInput('2')">2</button>
+      <button class="pin-num-btn" onclick="pinInput('3')">3</button>
+      <button class="pin-num-btn" onclick="pinInput('4')">4</button>
+      <button class="pin-num-btn" onclick="pinInput('5')">5</button>
+      <button class="pin-num-btn" onclick="pinInput('6')">6</button>
+      <button class="pin-num-btn" onclick="pinInput('7')">7</button>
+      <button class="pin-num-btn" onclick="pinInput('8')">8</button>
+      <button class="pin-num-btn" onclick="pinInput('9')">9</button>
+      <div></div>
+      <button class="pin-num-btn" onclick="pinInput('0')">0</button>
+      <button class="pin-num-btn pin-del-btn" onclick="pinDelete()">⌫</button>
+    </div>
+  </div>
+
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <button class="nav-btn active" data-view="log" onclick="switchView('log')">

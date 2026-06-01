@@ -1,3 +1,99 @@
+/* ===== PIN SCREEN ===== */
+.pin-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  z-index: 1000;
+}
+
+.pin-screen.hidden { display: none; }
+
+.pin-logo {
+  background: var(--red);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-bottom: -8px;
+}
+
+.pin-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.pin-dots {
+  display: flex;
+  gap: 20px;
+}
+
+.pin-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--text-muted);
+  transition: all 0.15s;
+}
+
+.pin-dot.filled {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.pin-dots.shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-10px); }
+  40%       { transform: translateX(10px); }
+  60%       { transform: translateX(-8px); }
+  80%       { transform: translateX(8px); }
+}
+
+.pin-error {
+  font-size: 13px;
+  color: #ef4444;
+  min-height: 18px;
+  font-weight: 600;
+}
+
+.pin-numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 280px;
+}
+
+.pin-num-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 72px;
+  height: 72px;
+  color: var(--text);
+  font-size: 26px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.1s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  margin: 0 auto;
+}
+
+.pin-num-btn:active { background: var(--surface3); }
+.pin-del-btn { font-size: 20px; color: var(--red); }
+
 /* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
