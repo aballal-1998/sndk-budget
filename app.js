@@ -328,7 +328,17 @@ function escHtml(str) {
 }
 
 // ===== INIT =====
+function isMobile() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    || window.innerWidth <= 768;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  if (!isMobile()) {
+    document.getElementById('desktop-block').classList.remove('hidden');
+    return;
+  }
+
   document.getElementById('expense-date').value = new Date().toISOString().slice(0, 10);
 
   initPin();
