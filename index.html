@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SNDK Budget" />
+  <title>SNDK Budget</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-view="log" onclick="switchView('log')">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      <span>Log</span>
+    </button>
+    <button class="nav-btn" data-view="dashboard" onclick="switchView('dashboard')">
+      <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>Budget</span>
+    </button>
+    <button class="nav-btn" data-view="history" onclick="switchView('history')">
+      <svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+      <span>History</span>
+    </button>
+  </nav>
+
+  <!-- VIEW: LOG EXPENSE -->
+  <div id="view-log" class="view active">
+    <header class="app-header">
+      <div class="logo-mark">SNDK</div>
+      <h1>Log Expense</h1>
+    </header>
+
+    <div class="log-container">
+      <!-- Category Pills -->
+      <div class="section-label">Category</div>
+      <div class="category-grid">
+        <button class="cat-btn active" data-cat="Food" onclick="selectCategory(this)">
+          <span class="cat-icon">🍔</span>
+          <span>Food</span>
+        </button>
+        <button class="cat-btn" data-cat="Transport" onclick="selectCategory(this)">
+          <span class="cat-icon">🚗</span>
+          <span>Transport</span>
+        </button>
+        <button class="cat-btn" data-cat="Misc" onclick="selectCategory(this)">
+          <span class="cat-icon">📦</span>
+          <span>Misc</span>
+        </button>
+      </div>
+
+      <!-- Amount Numpad -->
+      <div class="section-label">Amount</div>
+      <div class="amount-display">
+        <span class="currency">$</span>
+        <span id="amount-value">0</span>
+      </div>
+      <div class="numpad">
+        <button class="num-btn" onclick="numpadInput('1')">1</button>
+        <button class="num-btn" onclick="numpadInput('2')">2</button>
+        <button class="num-btn" onclick="numpadInput('3')">3</button>
+        <button class="num-btn" onclick="numpadInput('4')">4</button>
+        <button class="num-btn" onclick="numpadInput('5')">5</button>
+        <button class="num-btn" onclick="numpadInput('6')">6</button>
+        <button class="num-btn" onclick="numpadInput('7')">7</button>
+        <button class="num-btn" onclick="numpadInput('8')">8</button>
+        <button class="num-btn" onclick="numpadInput('9')">9</button>
+        <button class="num-btn" onclick="numpadInput('.')">.</button>
+        <button class="num-btn" onclick="numpadInput('0')">0</button>
+        <button class="num-btn del-btn" onclick="numpadDelete()">⌫</button>
+      </div>
+
+      <!-- Note -->
+      <input type="text" id="expense-note" class="note-input" placeholder="Note (optional — e.g. Chipotle)" maxlength="40" />
+
+      <!-- Date -->
+      <input type="date" id="expense-date" class="date-input" />
+
+      <!-- Log Button -->
+      <button class="log-btn" onclick="logExpense()">LOG EXPENSE</button>
+
+      <div id="log-feedback" class="log-feedback"></div>
+    </div>
+  </div>
+
+  <!-- VIEW: DASHBOARD -->
+  <div id="view-dashboard" class="view">
+    <header class="app-header">
+      <div class="logo-mark">SNDK</div>
+      <h1>Budget</h1>
+    </header>
+
+    <div class="dashboard-container">
+
+      <!-- Internship Progress -->
+      <div class="card">
+        <div class="card-title">Internship Progress</div>
+        <div class="progress-meta">
+          <span id="dash-weeks-done">0</span> of 11.25 weeks
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="internship-bar"></div>
+        </div>
+        <div class="progress-dates">Jun 2 → Aug 19, 2026</div>
+      </div>
+
+      <!-- Savings Tracker -->
+      <div class="card">
+        <div class="card-title">Savings Goal</div>
+        <div class="savings-row">
+          <div class="savings-actual" id="dash-savings">$0</div>
+          <div class="savings-target">of $4,400 goal</div>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill savings-bar-fill" id="savings-bar"></div>
+        </div>
+        <div class="savings-sub" id="dash-savings-sub"></div>
+      </div>
+
+      <!-- Monthly Spend -->
+      <div class="card">
+        <div class="card-title">This Month</div>
+        <div id="month-label" class="month-label"></div>
+
+        <div class="budget-row">
+          <div class="budget-cat">
+            <div class="cat-dot food-dot"></div>Food
+          </div>
+          <div class="budget-bar-wrap">
+            <div class="budget-bar-fill food-fill" id="bar-food"></div>
+          </div>
+          <div class="budget-nums">
+            <span id="spent-food">$0</span><span class="budget-of"> / $550</span>
+          </div>
+        </div>
+
+        <div class="budget-row">
+          <div class="budget-cat">
+            <div class="cat-dot transport-dot"></div>Transport
+          </div>
+          <div class="budget-bar-wrap">
+            <div class="budget-bar-fill transport-fill" id="bar-transport"></div>
+          </div>
+          <div class="budget-nums">
+            <span id="spent-transport">$0</span><span class="budget-of"> / $25</span>
+          </div>
+        </div>
+
+        <div class="budget-row">
+          <div class="budget-cat">
+            <div class="cat-dot misc-dot"></div>Misc
+          </div>
+          <div class="budget-bar-wrap">
+            <div class="budget-bar-fill misc-fill" id="bar-misc"></div>
+          </div>
+          <div class="budget-nums">
+            <span id="spent-misc">$0</span><span class="budget-of"> / $290</span>
+          </div>
+        </div>
+
+        <div class="total-row">
+          <span>Total variable spend</span>
+          <span id="dash-total-spend">$0 / $865</span>
+        </div>
+      </div>
+
+      <!-- Take-Home Summary -->
+      <div class="card">
+        <div class="card-title">Pay Summary</div>
+        <div class="pay-row"><span>Monthly take-home</span><span class="pay-val">$4,978</span></div>
+        <div class="pay-row"><span>Housing (fixed)</span><span class="pay-val pay-neg">−$2,863</span></div>
+        <div class="pay-row"><span>Variable budget</span><span class="pay-val pay-neg">−$865</span></div>
+        <div class="pay-row pay-divider"><span>Monthly savings</span><span class="pay-val pay-pos">$1,250</span></div>
+        <div class="pay-row"><span>Total gross (11.25 wks)</span><span class="pay-val">$20,495</span></div>
+        <div class="pay-row"><span>Expected tax refund</span><span class="pay-val pay-pos">~$1,750</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VIEW: HISTORY -->
+  <div id="view-history" class="view">
+    <header class="app-header">
+      <div class="logo-mark">SNDK</div>
+      <h1>History</h1>
+    </header>
+
+    <div class="history-container">
+      <div class="history-controls">
+        <select id="history-month-filter" class="filter-select" onchange="renderHistory()">
+          <option value="all">All months</option>
+          <option value="2026-06">June 2026</option>
+          <option value="2026-07">July 2026</option>
+          <option value="2026-08">August 2026</option>
+        </select>
+        <select id="history-cat-filter" class="filter-select" onchange="renderHistory()">
+          <option value="all">All categories</option>
+          <option value="Food">Food</option>
+          <option value="Transport">Transport</option>
+          <option value="Misc">Misc</option>
+        </select>
+      </div>
+
+      <div id="history-list" class="history-list"></div>
+
+      <div class="export-row">
+        <button class="export-btn" onclick="exportCSV()">Export CSV</button>
+        <button class="clear-btn" onclick="clearAllData()">Clear All Data</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
