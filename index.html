@@ -62,6 +62,10 @@
       <svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
       <span>History</span>
     </button>
+    <button class="nav-btn" data-view="pay" onclick="switchView('pay')">
+      <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+      <span>Pay</span>
+    </button>
   </nav>
 
   <!-- VIEW: LOG EXPENSE -->
@@ -75,9 +79,17 @@
       <!-- Category Pills -->
       <div class="section-label">Category</div>
       <div class="category-grid">
-        <button class="cat-btn active" data-cat="Food" onclick="selectCategory(this)">
+        <button class="cat-btn active" data-cat="Groceries" onclick="selectCategory(this)">
+          <span class="cat-icon">🛒</span>
+          <span>Groceries</span>
+        </button>
+        <button class="cat-btn" data-cat="Cafeteria" onclick="selectCategory(this)">
+          <span class="cat-icon">🍽️</span>
+          <span>Cafeteria</span>
+        </button>
+        <button class="cat-btn" data-cat="Dining Out" onclick="selectCategory(this)">
           <span class="cat-icon">🍔</span>
-          <span>Food</span>
+          <span>Dining Out</span>
         </button>
         <button class="cat-btn" data-cat="Transport" onclick="selectCategory(this)">
           <span class="cat-icon">🚗</span>
@@ -167,51 +179,29 @@
         <div id="month-label" class="month-label"></div>
 
         <div class="budget-row">
-          <div class="budget-cat">
-            <div class="cat-dot housing-dot"></div>Housing
-          </div>
-          <div class="budget-bar-wrap">
-            <div class="budget-bar-fill housing-fill" id="bar-housing"></div>
-          </div>
-          <div class="budget-nums">
-            <span id="spent-housing">$0</span><span class="budget-of"> / $2,863</span>
-          </div>
+          <div class="budget-cat"><div class="cat-dot housing-dot"></div>Housing</div>
+          <div class="budget-bar-wrap"><div class="budget-bar-fill housing-fill" id="bar-housing"></div></div>
+          <div class="budget-nums"><span id="spent-housing">$0</span><span class="budget-of"> / $2,863</span></div>
         </div>
-
         <div class="budget-row">
-          <div class="budget-cat">
-            <div class="cat-dot food-dot"></div>Food
-          </div>
-          <div class="budget-bar-wrap">
-            <div class="budget-bar-fill food-fill" id="bar-food"></div>
-          </div>
-          <div class="budget-nums">
-            <span id="spent-food">$0</span><span class="budget-of"> / $550</span>
-          </div>
+          <div class="budget-cat"><div class="cat-dot groceries-dot"></div>Groceries</div>
+          <div class="budget-bar-wrap"><div class="budget-bar-fill groceries-fill" id="bar-groceries"></div></div>
+          <div class="budget-nums"><span id="spent-groceries">$0</span><span class="budget-of"> / $400</span></div>
         </div>
-
         <div class="budget-row">
-          <div class="budget-cat">
-            <div class="cat-dot transport-dot"></div>Transport
-          </div>
-          <div class="budget-bar-wrap">
-            <div class="budget-bar-fill transport-fill" id="bar-transport"></div>
-          </div>
-          <div class="budget-nums">
-            <span id="spent-transport">$0</span><span class="budget-of"> / $25</span>
-          </div>
+          <div class="budget-cat"><div class="cat-dot dining-dot"></div>Dining</div>
+          <div class="budget-bar-wrap"><div class="budget-bar-fill dining-fill" id="bar-dining"></div></div>
+          <div class="budget-nums"><span id="spent-dining">$0</span><span class="budget-of"> / $150</span></div>
         </div>
-
         <div class="budget-row">
-          <div class="budget-cat">
-            <div class="cat-dot misc-dot"></div>Misc
-          </div>
-          <div class="budget-bar-wrap">
-            <div class="budget-bar-fill misc-fill" id="bar-misc"></div>
-          </div>
-          <div class="budget-nums">
-            <span id="spent-misc">$0</span><span class="budget-of"> / $290</span>
-          </div>
+          <div class="budget-cat"><div class="cat-dot transport-dot"></div>Transport</div>
+          <div class="budget-bar-wrap"><div class="budget-bar-fill transport-fill" id="bar-transport"></div></div>
+          <div class="budget-nums"><span id="spent-transport">$0</span><span class="budget-of"> / $25</span></div>
+        </div>
+        <div class="budget-row">
+          <div class="budget-cat"><div class="cat-dot misc-dot"></div>Misc</div>
+          <div class="budget-bar-wrap"><div class="budget-bar-fill misc-fill" id="bar-misc"></div></div>
+          <div class="budget-nums"><span id="spent-misc">$0</span><span class="budget-of"> / $290</span></div>
         </div>
 
         <div class="total-row">
@@ -220,15 +210,6 @@
         </div>
       </div>
 
-      <!-- Take-Home Summary -->
-      <div class="card">
-        <div class="card-title">Pay Summary</div>
-        <div class="pay-row"><span>Monthly take-home</span><span class="pay-val">$4,978</span></div>
-        <div class="pay-row"><span>Planned total spend</span><span class="pay-val pay-neg">−$3,728</span></div>
-        <div class="pay-row pay-divider"><span>Monthly savings</span><span class="pay-val pay-pos">$1,250</span></div>
-        <div class="pay-row"><span>Total gross (11.25 wks)</span><span class="pay-val">$20,495</span></div>
-        <div class="pay-row"><span>Expected tax refund</span><span class="pay-val pay-pos">~$1,750</span></div>
-      </div>
 
     </div>
   </div>
@@ -262,6 +243,42 @@
         <button class="export-btn" onclick="exportCSV()">Export CSV</button>
         <button class="clear-btn" onclick="clearAllData()">Clear All Data</button>
       </div>
+    </div>
+  </div>
+
+  <!-- VIEW: PAY -->
+  <div id="view-pay" class="view">
+    <header class="app-header">
+      <div class="logo-mark">SNDK</div>
+      <h1>Pay</h1>
+    </header>
+    <div class="dashboard-container">
+
+      <div class="card">
+        <div class="card-title">Live Summary</div>
+        <div class="pay-row"><span>Take-home accrued</span><span class="pay-val pay-pos" id="pay-takehome-accrued">$0</span></div>
+        <div class="pay-row"><span>Total logged spend</span><span class="pay-val pay-neg" id="pay-total-spent">$0</span></div>
+        <div class="pay-row pay-divider"><span>Estimated savings</span><span class="pay-val pay-pos" id="pay-savings-live">$0</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Monthly Plan</div>
+        <div class="pay-row"><span>Monthly take-home</span><span class="pay-val">$4,978</span></div>
+        <div class="pay-row"><span>Housing</span><span class="pay-val pay-neg">−$2,863</span></div>
+        <div class="pay-row"><span>Groceries</span><span class="pay-val pay-neg">−$400</span></div>
+        <div class="pay-row"><span>Dining</span><span class="pay-val pay-neg">−$150</span></div>
+        <div class="pay-row"><span>Transport</span><span class="pay-val pay-neg">−$25</span></div>
+        <div class="pay-row"><span>Misc</span><span class="pay-val pay-neg">−$290</span></div>
+        <div class="pay-row pay-divider"><span>Monthly savings</span><span class="pay-val pay-pos">$1,250</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Internship Total</div>
+        <div class="pay-row"><span>Total gross (~11.25 wks)</span><span class="pay-val">$20,495</span></div>
+        <div class="pay-row"><span>Expected tax refund</span><span class="pay-val pay-pos">~$1,750</span></div>
+        <div class="pay-row pay-divider"><span>Projected total savings</span><span class="pay-val pay-pos">~$4,200–4,400</span></div>
+      </div>
+
     </div>
   </div>
 

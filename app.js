@@ -8,12 +8,19 @@ const SAVINGS_GOAL     = 4400;
 const MONTHLY_TAKEHOME = 4978;
 const HOUSING_MONTHLY  = 2863;
 
-const BUDGETS = { Housing: 2863, Food: 550, Transport: 25, Misc: 290 };
+const CAT_ICON = { Housing: '🏨', Groceries: '🛒', Cafeteria: '🍽️', 'Dining Out': '🍔', Transport: '🚗', Misc: '📦' };
 
-const CAT_ICON = { Housing: '🏨', Food: '🍔', Transport: '🚗', Misc: '📦' };
+// Groups define dashboard bars — Cafeteria + Dining Out share one $150 budget
+const BUDGET_GROUPS = [
+  { label: 'Housing',    cats: ['Housing'],               budget: 2863, id: 'housing' },
+  { label: 'Groceries',  cats: ['Groceries'],             budget: 400,  id: 'groceries' },
+  { label: 'Dining',     cats: ['Cafeteria', 'Dining Out'], budget: 150, id: 'dining' },
+  { label: 'Transport',  cats: ['Transport'],             budget: 25,   id: 'transport' },
+  { label: 'Misc',       cats: ['Misc'],                  budget: 290,  id: 'misc' },
+];
 
 // ===== STATE =====
-let currentCategory = 'Food';
+let currentCategory = 'Groceries';
 let amountStr = '0';
 
 // ===== PIN =====
@@ -127,6 +134,7 @@ function switchView(view) {
 
   if (view === 'dashboard') renderDashboard();
   if (view === 'history') renderHistory();
+  if (view === 'pay') renderPay();
 }
 
 // ===== LOG VIEW =====
@@ -232,22 +240,37 @@ function renderDashboard() {
   document.getElementById('month-label').textContent = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
 
   const monthExpenses = expenses.filter(e => e.date.startsWith(monthKey));
-  const totals = { Housing: 0, Food: 0, Transport: 0, Misc: 0 };
-  monthExpenses.forEach(e => { totals[e.category] = (totals[e.category] || 0) + e.amount; });
+  const catTotals = {};
+  monthExpenses.forEach(e => { catTotals[e.category] = (catTotals[e.category] || 0) + e.amount; });
 
-  ['Housing', 'Food', 'Transport', 'Misc'].forEach(cat => {
-    const spent = totals[cat];
-    const budget = BUDGETS[cat];
-    const pct = Math.min(spent / budget, 1);
-    const bar = document.getElementById('bar-' + cat.toLowerCase());
+  BUDGET_GROUPS.forEach(group => {
+    const spent = group.cats.reduce((s, c) => s + (catTotals[c] || 0), 0);
+    const pct = Math.min(spent / group.budget, 1);
+    const bar = document.getElementById('bar-' + group.id);
     bar.style.width = (pct * 100).toFixed(1) + '%';
-    bar.classList.toggle('over', spent > budget);
-    document.getElementById('spent-' + cat.toLowerCase()).textContent = '$' + spent.toFixed(0);
+    bar.classList.toggle('over', spent > group.budget);
+    document.getElementById('spent-' + group.id).textContent = '$' + spent.toFixed(0);
   });
 
-  const totalSpend = totals.Housing + totals.Food + totals.Transport + totals.Misc;
+  const totalSpend = Object.values(catTotals).reduce((s, v) => s + v, 0);
   document.getElementById('dash-total-spend').textContent =
     `$${totalSpend.toFixed(0)} / $3,728`;
+}
+
+// ===== PAY =====
+function renderPay() {
+  const expenses = getExpenses();
+  const totalSpent = expenses.reduce((s, e) => s + e.amount, 0);
+  const today = new Date();
+  const totalMs = INTERNSHIP_END - INTERNSHIP_START;
+  const elapsedMs = Math.max(0, Math.min(today - INTERNSHIP_START, totalMs));
+  const weeksElapsed = elapsedMs / (7 * 24 * 60 * 60 * 1000);
+  const takehomeAccrued = (MONTHLY_TAKEHOME / 4.33) * weeksElapsed;
+  const estimatedSavings = Math.max(0, takehomeAccrued - totalSpent);
+
+  document.getElementById('pay-takehome-accrued').textContent = '$' + takehomeAccrued.toFixed(0);
+  document.getElementById('pay-total-spent').textContent = '$' + totalSpent.toFixed(0);
+  document.getElementById('pay-savings-live').textContent = '$' + estimatedSavings.toFixed(0);
 }
 
 // ===== HISTORY =====

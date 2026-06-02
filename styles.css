@@ -478,10 +478,11 @@ html, body {
   flex-shrink: 0;
 }
 
-.housing-dot { background: #f59e0b; }
-.food-dot { background: var(--red); }
-.transport-dot { background: #3b82f6; }
-.misc-dot { background: #a855f7; }
+.housing-dot    { background: #f59e0b; }
+.groceries-dot  { background: #22c55e; }
+.dining-dot     { background: var(--red); }
+.transport-dot  { background: #3b82f6; }
+.misc-dot       { background: #a855f7; }
 
 .budget-bar-wrap {
   background: var(--surface3);
@@ -497,10 +498,11 @@ html, body {
   transition: width 0.5s ease;
 }
 
-.housing-fill { background: #f59e0b; }
-.food-fill { background: var(--red); }
-.transport-fill { background: #3b82f6; }
-.misc-fill { background: #a855f7; }
+.housing-fill    { background: #f59e0b; }
+.groceries-fill  { background: #22c55e; }
+.dining-fill     { background: var(--red); }
+.transport-fill  { background: #3b82f6; }
+.misc-fill       { background: #a855f7; }
 
 .budget-bar-fill.over { background: var(--yellow) !important; }
 
