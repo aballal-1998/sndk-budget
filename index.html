@@ -87,6 +87,10 @@
           <span class="cat-icon">📦</span>
           <span>Misc</span>
         </button>
+        <button class="cat-btn" data-cat="Housing" onclick="selectCategory(this)">
+          <span class="cat-icon">🏨</span>
+          <span>Housing</span>
+        </button>
       </div>
 
       <!-- Amount Numpad -->
@@ -164,6 +168,18 @@
 
         <div class="budget-row">
           <div class="budget-cat">
+            <div class="cat-dot housing-dot"></div>Housing
+          </div>
+          <div class="budget-bar-wrap">
+            <div class="budget-bar-fill housing-fill" id="bar-housing"></div>
+          </div>
+          <div class="budget-nums">
+            <span id="spent-housing">$0</span><span class="budget-of"> / $2,863</span>
+          </div>
+        </div>
+
+        <div class="budget-row">
+          <div class="budget-cat">
             <div class="cat-dot food-dot"></div>Food
           </div>
           <div class="budget-bar-wrap">
@@ -199,8 +215,8 @@
         </div>
 
         <div class="total-row">
-          <span>Total variable spend</span>
-          <span id="dash-total-spend">$0 / $865</span>
+          <span>Total spend</span>
+          <span id="dash-total-spend">$0 / $3,728</span>
         </div>
       </div>
 
@@ -208,8 +224,7 @@
       <div class="card">
         <div class="card-title">Pay Summary</div>
         <div class="pay-row"><span>Monthly take-home</span><span class="pay-val">$4,978</span></div>
-        <div class="pay-row"><span>Housing (fixed)</span><span class="pay-val pay-neg">−$2,863</span></div>
-        <div class="pay-row"><span>Variable budget</span><span class="pay-val pay-neg">−$865</span></div>
+        <div class="pay-row"><span>Planned total spend</span><span class="pay-val pay-neg">−$3,728</span></div>
         <div class="pay-row pay-divider"><span>Monthly savings</span><span class="pay-val pay-pos">$1,250</span></div>
         <div class="pay-row"><span>Total gross (11.25 wks)</span><span class="pay-val">$20,495</span></div>
         <div class="pay-row"><span>Expected tax refund</span><span class="pay-val pay-pos">~$1,750</span></div>

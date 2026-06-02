@@ -245,7 +245,7 @@ html, body {
 /* Category Grid */
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
@@ -478,6 +478,7 @@ html, body {
   flex-shrink: 0;
 }
 
+.housing-dot { background: #f59e0b; }
 .food-dot { background: var(--red); }
 .transport-dot { background: #3b82f6; }
 .misc-dot { background: #a855f7; }
@@ -496,6 +497,7 @@ html, body {
   transition: width 0.5s ease;
 }
 
+.housing-fill { background: #f59e0b; }
 .food-fill { background: var(--red); }
 .transport-fill { background: #3b82f6; }
 .misc-fill { background: #a855f7; }

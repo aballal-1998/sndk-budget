@@ -8,9 +8,9 @@ const SAVINGS_GOAL     = 4400;
 const MONTHLY_TAKEHOME = 4978;
 const HOUSING_MONTHLY  = 2863;
 
-const BUDGETS = { Food: 550, Transport: 25, Misc: 290 };
+const BUDGETS = { Housing: 2863, Food: 550, Transport: 25, Misc: 290 };
 
-const CAT_ICON = { Food: '🍔', Transport: '🚗', Misc: '📦' };
+const CAT_ICON = { Housing: '🏨', Food: '🍔', Transport: '🚗', Misc: '📦' };
 
 // ===== STATE =====
 let currentCategory = 'Food';
@@ -211,13 +211,12 @@ function renderDashboard() {
   document.getElementById('dash-weeks-done').textContent = weeksDone;
   document.getElementById('internship-bar').style.width = (pct * 100).toFixed(1) + '%';
 
-  // Savings: estimated take-home accrued minus total expenses
+  // Savings: take-home accrued minus all logged expenses (including housing)
   const weeksElapsed = elapsedMs / (7 * 24 * 60 * 60 * 1000);
   const takehomeAccrued = (MONTHLY_TAKEHOME / 4.33) * weeksElapsed;
-  const housingAccrued = (HOUSING_MONTHLY / 4.33) * weeksElapsed;
   const expenses = getExpenses();
-  const totalVariableSpend = expenses.reduce((s, e) => s + e.amount, 0);
-  const estimatedSavings = Math.max(0, takehomeAccrued - housingAccrued - totalVariableSpend);
+  const totalSpentAllTime = expenses.reduce((s, e) => s + e.amount, 0);
+  const estimatedSavings = Math.max(0, takehomeAccrued - totalSpentAllTime);
   const savingsPct = Math.min(estimatedSavings / SAVINGS_GOAL, 1);
 
   document.getElementById('dash-savings').textContent = '$' + estimatedSavings.toFixed(0);
@@ -233,10 +232,10 @@ function renderDashboard() {
   document.getElementById('month-label').textContent = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
 
   const monthExpenses = expenses.filter(e => e.date.startsWith(monthKey));
-  const totals = { Food: 0, Transport: 0, Misc: 0 };
+  const totals = { Housing: 0, Food: 0, Transport: 0, Misc: 0 };
   monthExpenses.forEach(e => { totals[e.category] = (totals[e.category] || 0) + e.amount; });
 
-  ['Food', 'Transport', 'Misc'].forEach(cat => {
+  ['Housing', 'Food', 'Transport', 'Misc'].forEach(cat => {
     const spent = totals[cat];
     const budget = BUDGETS[cat];
     const pct = Math.min(spent / budget, 1);
@@ -246,9 +245,9 @@ function renderDashboard() {
     document.getElementById('spent-' + cat.toLowerCase()).textContent = '$' + spent.toFixed(0);
   });
 
-  const totalSpend = totals.Food + totals.Transport + totals.Misc;
+  const totalSpend = totals.Housing + totals.Food + totals.Transport + totals.Misc;
   document.getElementById('dash-total-spend').textContent =
-    `$${totalSpend.toFixed(0)} / $865`;
+    `$${totalSpend.toFixed(0)} / $3,728`;
 }
 
 // ===== HISTORY =====
