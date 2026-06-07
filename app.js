@@ -208,30 +208,7 @@ function showFeedback(msg, type) {
 
 // ===== DASHBOARD =====
 function renderDashboard() {
-  const today = new Date();
-
-  // Internship progress
-  const totalMs = INTERNSHIP_END - INTERNSHIP_START;
-  const elapsedMs = Math.max(0, Math.min(today - INTERNSHIP_START, totalMs));
-  const pct = elapsedMs / totalMs;
-  const weeksDone = (pct * INTERNSHIP_WEEKS).toFixed(1);
-
-  document.getElementById('dash-weeks-done').textContent = weeksDone;
-  document.getElementById('internship-bar').style.width = (pct * 100).toFixed(1) + '%';
-
-  // Savings: take-home accrued minus all logged expenses (including housing)
-  const weeksElapsed = elapsedMs / (7 * 24 * 60 * 60 * 1000);
-  const takehomeAccrued = (MONTHLY_TAKEHOME / 4.33) * weeksElapsed;
   const expenses = getExpenses();
-  const totalSpentAllTime = expenses.reduce((s, e) => s + e.amount, 0);
-  const estimatedSavings = Math.max(0, takehomeAccrued - totalSpentAllTime);
-  const savingsPct = Math.min(estimatedSavings / SAVINGS_GOAL, 1);
-
-  document.getElementById('dash-savings').textContent = '$' + estimatedSavings.toFixed(0);
-  document.getElementById('savings-bar').style.width = (savingsPct * 100).toFixed(1) + '%';
-  const remaining = Math.max(0, SAVINGS_GOAL - estimatedSavings);
-  document.getElementById('dash-savings-sub').textContent =
-    remaining > 0 ? `$${remaining.toFixed(0)} to go` : 'Goal reached!';
 
   // Monthly spend
   const now = new Date();
