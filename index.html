@@ -68,6 +68,16 @@
     </button>
   </nav>
 
+  <!-- PROGRESS BANNER -->
+  <div class="progress-banner">
+    <div class="banner-row">
+      <div class="banner-bar-wrap">
+        <div class="banner-bar-fill" id="banner-bar"></div>
+      </div>
+      <span class="banner-label" id="banner-label">Day — of —</span>
+    </div>
+  </div>
+
   <!-- VIEW: LOG EXPENSE -->
   <div id="view-log" class="view active">
     <header class="app-header">
@@ -147,31 +157,6 @@
     </header>
 
     <div class="dashboard-container">
-
-      <!-- Internship Progress -->
-      <div class="card">
-        <div class="card-title">Internship Progress</div>
-        <div class="progress-meta">
-          <span id="dash-weeks-done">0</span> of 11.25 weeks
-        </div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-fill" id="internship-bar"></div>
-        </div>
-        <div class="progress-dates">Jun 2 → Aug 19, 2026</div>
-      </div>
-
-      <!-- Savings Tracker -->
-      <div class="card">
-        <div class="card-title">Savings Goal</div>
-        <div class="savings-row">
-          <div class="savings-actual" id="dash-savings">$0</div>
-          <div class="savings-target">of $4,400 goal</div>
-        </div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-fill savings-bar-fill" id="savings-bar"></div>
-        </div>
-        <div class="savings-sub" id="dash-savings-sub"></div>
-      </div>
 
       <!-- Monthly Spend -->
       <div class="card">
@@ -258,10 +243,21 @@
     <div class="dashboard-container">
 
       <div class="card">
+        <div class="card-title">Savings Goal</div>
+        <div class="savings-row">
+          <div class="savings-actual" id="pay-savings-live">$0</div>
+          <div class="savings-target">of $4,400 goal</div>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill savings-bar-fill" id="savings-bar"></div>
+        </div>
+        <div class="savings-sub" id="pay-savings-sub"></div>
+      </div>
+
+      <div class="card">
         <div class="card-title">Live Summary</div>
         <div class="pay-row"><span>Take-home accrued</span><span class="pay-val pay-pos" id="pay-takehome-accrued">$0</span></div>
         <div class="pay-row"><span>Total logged spend</span><span class="pay-val pay-neg" id="pay-total-spent">$0</span></div>
-        <div class="pay-row pay-divider"><span>Estimated savings</span><span class="pay-val pay-pos" id="pay-savings-live">$0</span></div>
       </div>
 
       <div class="card">

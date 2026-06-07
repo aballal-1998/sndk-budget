@@ -2,7 +2,7 @@
 
 // ===== CONSTANTS =====
 const INTERNSHIP_START = new Date('2026-06-02');
-const INTERNSHIP_END   = new Date('2026-08-19');
+const INTERNSHIP_END   = new Date('2026-08-21');
 const INTERNSHIP_WEEKS = 11.25;
 const SAVINGS_GOAL     = 4400;
 const MONTHLY_TAKEHOME = 4978;
@@ -257,6 +257,19 @@ function renderDashboard() {
     `$${totalSpend.toFixed(0)} / $3,728`;
 }
 
+// ===== BANNER =====
+function renderBanner() {
+  const today = new Date();
+  const totalMs = INTERNSHIP_END - INTERNSHIP_START;
+  const elapsedMs = Math.max(0, Math.min(today - INTERNSHIP_START, totalMs));
+  const totalDays = Math.round(totalMs / (1000 * 60 * 60 * 24));
+  const daysDone = Math.min(Math.max(0, Math.floor(elapsedMs / (1000 * 60 * 60 * 24))) + 1, totalDays);
+  const pct = (elapsedMs / totalMs * 100).toFixed(1);
+
+  document.getElementById('banner-bar').style.width = pct + '%';
+  document.getElementById('banner-label').textContent = `Day ${daysDone} of ${totalDays}`;
+}
+
 // ===== PAY =====
 function renderPay() {
   const expenses = getExpenses();
@@ -271,6 +284,9 @@ function renderPay() {
   document.getElementById('pay-takehome-accrued').textContent = '$' + takehomeAccrued.toFixed(0);
   document.getElementById('pay-total-spent').textContent = '$' + totalSpent.toFixed(0);
   document.getElementById('pay-savings-live').textContent = '$' + estimatedSavings.toFixed(0);
+  document.getElementById('savings-bar').style.width = (Math.min(estimatedSavings / SAVINGS_GOAL, 1) * 100).toFixed(1) + '%';
+  const remaining = Math.max(0, SAVINGS_GOAL - estimatedSavings);
+  document.getElementById('pay-savings-sub').textContent = remaining > 0 ? `$${remaining.toFixed(0)} to go` : 'Goal reached!';
 }
 
 // ===== HISTORY =====
@@ -414,6 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('expense-date').value = new Date().toISOString().slice(0, 10);
 
   initPin();
+  renderBanner();
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});

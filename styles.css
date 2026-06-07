@@ -196,6 +196,48 @@ html, body {
   overscroll-behavior: none;
 }
 
+/* ===== PROGRESS BANNER ===== */
+.progress-banner {
+  position: fixed;
+  top: 57px;
+  left: 0;
+  right: 0;
+  z-index: 9;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 7px 16px;
+}
+
+.banner-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.banner-bar-wrap {
+  flex: 1;
+  background: var(--surface3);
+  border-radius: 99px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.banner-bar-fill {
+  background: var(--red);
+  height: 100%;
+  border-radius: 99px;
+  width: 0%;
+  transition: width 0.6s ease;
+}
+
+.banner-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
 /* ===== VIEWS ===== */
 .view {
   display: none;
@@ -277,6 +319,7 @@ html, body {
 /* ===== LOG VIEW ===== */
 .log-container {
   padding: 20px 16px;
+  padding-top: 48px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -421,6 +464,7 @@ html, body {
 /* ===== DASHBOARD VIEW ===== */
 .dashboard-container {
   padding: 16px;
+  padding-top: 44px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -601,6 +645,7 @@ html, body {
 /* ===== HISTORY VIEW ===== */
 .history-container {
   padding: 16px;
+  padding-top: 44px;
   display: flex;
   flex-direction: column;
   gap: 14px;
