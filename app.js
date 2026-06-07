@@ -266,8 +266,8 @@ function renderBanner() {
   const daysDone = Math.min(Math.max(0, Math.floor(elapsedMs / (1000 * 60 * 60 * 24))) + 1, totalDays);
   const pct = (elapsedMs / totalMs * 100).toFixed(1);
 
-  document.getElementById('banner-bar').style.width = pct + '%';
-  document.getElementById('banner-label').textContent = `Day ${daysDone} of ${totalDays}`;
+  document.querySelectorAll('.banner-bar-fill').forEach(el => el.style.width = pct + '%');
+  document.querySelectorAll('.progress-banner .banner-label').forEach(el => el.textContent = `Day ${daysDone} of ${totalDays}`);
 }
 
 // ===== PAYCHECKS =====

@@ -266,11 +266,6 @@ html, body {
 
 /* ===== PROGRESS BANNER ===== */
 .progress-banner {
-  position: fixed;
-  top: 57px;
-  left: 0;
-  right: 0;
-  z-index: 9;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   padding: 7px 16px;
