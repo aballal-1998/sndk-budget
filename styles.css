@@ -119,6 +119,74 @@
 .pin-num-btn:active { background: var(--surface3); }
 .pin-del-btn { font-size: 20px; color: var(--red); }
 
+/* ===== PLAN VS ACTUAL ===== */
+.pva-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pva-header, .pva-row {
+  display: grid;
+  grid-template-columns: 1fr 90px 90px;
+  align-items: center;
+  gap: 4px;
+}
+
+.pva-col-head {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+.pva-label {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.pva-plan {
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  color: var(--text-dim);
+}
+
+.pva-actual {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+  color: var(--text);
+}
+
+.pva-good { color: var(--green) !important; }
+.pva-bad  { color: #f87171 !important; }
+.pva-dim  { color: var(--text-muted) !important; font-size: 12px; font-weight: 400; }
+
+.pva-divider-row {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.pva-note {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Paycheck logger */
+.paycheck-row {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  gap: 10px;
+}
+
+.paycheck-input, .paycheck-date {
+  width: 100%;
+}
+
 /* ===== EDIT MODAL ===== */
 .edit-overlay {
   position: fixed;

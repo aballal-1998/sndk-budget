@@ -242,6 +242,7 @@
     </header>
     <div class="dashboard-container">
 
+      <!-- Savings Goal -->
       <div class="card">
         <div class="card-title">Savings Goal</div>
         <div class="savings-row">
@@ -254,28 +255,49 @@
         <div class="savings-sub" id="pay-savings-sub"></div>
       </div>
 
+      <!-- Plan vs Actual -->
       <div class="card">
-        <div class="card-title">Live Summary</div>
-        <div class="pay-row"><span>Take-home accrued</span><span class="pay-val pay-pos" id="pay-takehome-accrued">$0</span></div>
-        <div class="pay-row"><span>Total logged spend</span><span class="pay-val pay-neg" id="pay-total-spent">$0</span></div>
+        <div class="card-title">Plan vs. Actual</div>
+        <div class="pva-table">
+          <div class="pva-header">
+            <span></span>
+            <span class="pva-col-head">Plan</span>
+            <span class="pva-col-head">Actual</span>
+          </div>
+          <div class="pva-row">
+            <span class="pva-label">Take-home</span>
+            <span class="pva-plan" id="pva-takehome-plan">—</span>
+            <span class="pva-actual" id="pva-takehome-actual">—</span>
+          </div>
+          <div class="pva-row">
+            <span class="pva-label">Total spend</span>
+            <span class="pva-plan" id="pva-spend-plan">—</span>
+            <span class="pva-actual" id="pva-spend-actual">—</span>
+          </div>
+          <div class="pva-row pva-divider-row">
+            <span class="pva-label">Savings</span>
+            <span class="pva-plan" id="pva-savings-plan">—</span>
+            <span class="pva-actual" id="pva-savings-actual">—</span>
+          </div>
+          <div class="pva-row">
+            <span class="pva-label">Tax refund</span>
+            <span class="pva-plan" id="pva-refund-plan">—</span>
+            <span class="pva-actual pva-dim">At filing</span>
+          </div>
+        </div>
+        <div class="pva-note">Plan = full internship. Actual = logged to date.</div>
       </div>
 
+      <!-- Log Paycheck -->
       <div class="card">
-        <div class="card-title">Monthly Plan</div>
-        <div class="pay-row"><span>Monthly take-home</span><span class="pay-val">$4,978</span></div>
-        <div class="pay-row"><span>Housing</span><span class="pay-val pay-neg">−$2,863</span></div>
-        <div class="pay-row"><span>Groceries</span><span class="pay-val pay-neg">−$400</span></div>
-        <div class="pay-row"><span>Dining</span><span class="pay-val pay-neg">−$150</span></div>
-        <div class="pay-row"><span>Transport</span><span class="pay-val pay-neg">−$25</span></div>
-        <div class="pay-row"><span>Misc</span><span class="pay-val pay-neg">−$290</span></div>
-        <div class="pay-row pay-divider"><span>Monthly savings</span><span class="pay-val pay-pos">$1,250</span></div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Internship Total</div>
-        <div class="pay-row"><span>Total gross (~11.25 wks)</span><span class="pay-val">$20,495</span></div>
-        <div class="pay-row"><span>Expected tax refund</span><span class="pay-val pay-pos">~$1,750</span></div>
-        <div class="pay-row pay-divider"><span>Projected total savings</span><span class="pay-val pay-pos">~$4,200–4,400</span></div>
+        <div class="card-title">Log Paycheck</div>
+        <div class="paycheck-row">
+          <input type="number" id="paycheck-amount" class="note-input paycheck-input" placeholder="Net amount (e.g. 2489)" step="0.01" min="0" />
+          <input type="date" id="paycheck-date" class="date-input paycheck-date" />
+        </div>
+        <button class="log-btn" onclick="logPaycheck()">LOG PAYCHECK</button>
+        <div id="paycheck-feedback" class="log-feedback"></div>
+        <div id="paycheck-list" class="history-list"></div>
       </div>
 
     </div>

@@ -270,23 +270,91 @@ function renderBanner() {
   document.getElementById('banner-label').textContent = `Day ${daysDone} of ${totalDays}`;
 }
 
-// ===== PAY =====
-function renderPay() {
-  const expenses = getExpenses();
-  const totalSpent = expenses.reduce((s, e) => s + e.amount, 0);
-  const today = new Date();
-  const totalMs = INTERNSHIP_END - INTERNSHIP_START;
-  const elapsedMs = Math.max(0, Math.min(today - INTERNSHIP_START, totalMs));
-  const weeksElapsed = elapsedMs / (7 * 24 * 60 * 60 * 1000);
-  const takehomeAccrued = (MONTHLY_TAKEHOME / 4.33) * weeksElapsed;
-  const estimatedSavings = Math.max(0, takehomeAccrued - totalSpent);
+// ===== PAYCHECKS =====
+function getPaychecks() {
+  return JSON.parse(localStorage.getItem('sndk_paychecks') || '[]');
+}
 
-  document.getElementById('pay-takehome-accrued').textContent = '$' + takehomeAccrued.toFixed(0);
-  document.getElementById('pay-total-spent').textContent = '$' + totalSpent.toFixed(0);
-  document.getElementById('pay-savings-live').textContent = '$' + estimatedSavings.toFixed(0);
-  document.getElementById('savings-bar').style.width = (Math.min(estimatedSavings / SAVINGS_GOAL, 1) * 100).toFixed(1) + '%';
-  const remaining = Math.max(0, SAVINGS_GOAL - estimatedSavings);
+function savePaychecks(p) {
+  localStorage.setItem('sndk_paychecks', JSON.stringify(p));
+}
+
+function logPaycheck() {
+  const amount = parseFloat(document.getElementById('paycheck-amount').value);
+  const date = document.getElementById('paycheck-date').value || new Date().toISOString().slice(0, 10);
+  if (!amount || amount <= 0) {
+    document.getElementById('paycheck-feedback').textContent = 'Enter an amount';
+    setTimeout(() => { document.getElementById('paycheck-feedback').textContent = ''; }, 2000);
+    return;
+  }
+  const paychecks = getPaychecks();
+  paychecks.push({ id: Date.now(), amount, date });
+  savePaychecks(paychecks);
+  document.getElementById('paycheck-amount').value = '';
+  document.getElementById('paycheck-feedback').textContent = `$${amount.toFixed(2)} logged`;
+  setTimeout(() => { document.getElementById('paycheck-feedback').textContent = ''; }, 2000);
+  renderPay();
+}
+
+function deletePaycheck(id) {
+  savePaychecks(getPaychecks().filter(p => p.id !== id));
+  renderPay();
+}
+
+// ===== PAY =====
+const PLAN_TAKEHOME_TOTAL = Math.round(MONTHLY_TAKEHOME * (80 / 30.44)); // ~$13,084
+const PLAN_SPEND_TOTAL    = Math.round((3728) * (80 / 30.44));           // ~$9,800
+const PLAN_GROSS_TOTAL    = 20495;
+const TAX_REFUND_EST      = 1750;
+
+function renderPay() {
+  const expenses  = getExpenses();
+  const paychecks = getPaychecks();
+
+  const actualTakehome = paychecks.reduce((s, p) => s + p.amount, 0);
+  const actualSpend    = expenses.reduce((s, e) => s + e.amount, 0);
+  const actualSavings  = Math.max(0, actualTakehome - actualSpend);
+
+  // Savings goal card
+  document.getElementById('pay-savings-live').textContent = '$' + actualSavings.toFixed(0);
+  document.getElementById('savings-bar').style.width = (Math.min(actualSavings / SAVINGS_GOAL, 1) * 100).toFixed(1) + '%';
+  const remaining = Math.max(0, SAVINGS_GOAL - actualSavings);
   document.getElementById('pay-savings-sub').textContent = remaining > 0 ? `$${remaining.toFixed(0)} to go` : 'Goal reached!';
+
+  // Plan vs Actual
+  document.getElementById('pva-takehome-plan').textContent  = '$' + PLAN_TAKEHOME_TOTAL.toLocaleString();
+  document.getElementById('pva-takehome-actual').textContent = actualTakehome > 0 ? '$' + actualTakehome.toFixed(0) : '—';
+  document.getElementById('pva-spend-plan').textContent     = '$' + PLAN_SPEND_TOTAL.toLocaleString();
+  document.getElementById('pva-spend-actual').textContent   = actualSpend > 0 ? '$' + actualSpend.toFixed(0) : '—';
+  document.getElementById('pva-savings-plan').textContent   = '$' + SAVINGS_GOAL.toLocaleString();
+  document.getElementById('pva-savings-actual').textContent = actualTakehome > 0 ? '$' + actualSavings.toFixed(0) : '—';
+  document.getElementById('pva-refund-plan').textContent    = '~$' + TAX_REFUND_EST.toLocaleString();
+
+  // variance highlights
+  setVariance('pva-spend-actual',   actualSpend,    PLAN_SPEND_TOTAL,    true);
+  setVariance('pva-savings-actual', actualSavings,  SAVINGS_GOAL,        false);
+
+  // Paycheck list
+  const list = paychecks.slice().sort((a, b) => b.date.localeCompare(a.date));
+  const el = document.getElementById('paycheck-list');
+  el.innerHTML = list.length === 0
+    ? '<div class="history-empty">No paychecks logged yet</div>'
+    : list.map(p => `
+        <div class="history-item">
+          <div class="history-item-body">
+            <div class="history-item-cat" style="color:var(--green)">Paycheck</div>
+            <div class="history-item-date">${formatDate(p.date)}</div>
+          </div>
+          <div class="history-item-amount" style="color:var(--green)">$${p.amount.toFixed(2)}</div>
+          <button class="history-delete-btn" onclick="deletePaycheck(${p.id})">×</button>
+        </div>`).join('');
+}
+
+function setVariance(id, actual, plan, higherIsBad) {
+  if (!actual) return;
+  const el = document.getElementById(id);
+  const over = actual > plan;
+  el.className = 'pva-actual ' + (over === higherIsBad ? 'pva-bad' : 'pva-good');
 }
 
 // ===== HISTORY =====
@@ -427,7 +495,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  document.getElementById('expense-date').value = new Date().toISOString().slice(0, 10);
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById('expense-date').value = today;
+  document.getElementById('paycheck-date').value = today;
 
   initPin();
   renderBanner();
