@@ -16,7 +16,7 @@ const CAT_ICON = { Housing: '🏨', Groceries: '🛒', Cafeteria: '🍽️', 'Di
 
 // Groups define dashboard bars — Cafeteria + Dining Out share one $150 budget
 const BUDGET_GROUPS = [
-  { label: 'Housing',    cats: ['Housing'],               budget: 2863, id: 'housing' },
+  { label: 'Housing',    cats: ['Housing'],               budget: 3338, id: 'housing' },
   { label: 'Groceries',  cats: ['Groceries'],             budget: 400,  id: 'groceries' },
   { label: 'Dining',     cats: ['Cafeteria', 'Dining Out'], budget: 150, id: 'dining' },
   { label: 'Transport',  cats: ['Transport'],             budget: 25,   id: 'transport' },

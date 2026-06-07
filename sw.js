@@ -1,4 +1,4 @@
-const CACHE = 'sndk-budget-v12';
+const CACHE = 'sndk-budget-v13';
 const ASSETS = ['./', './index.html', './styles.css', './app.js', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {
