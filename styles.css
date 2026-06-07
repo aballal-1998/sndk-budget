@@ -382,7 +382,6 @@ html, body {
 /* ===== LOG VIEW ===== */
 .log-container {
   padding: 20px 16px;
-  padding-top: 48px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -527,7 +526,6 @@ html, body {
 /* ===== DASHBOARD VIEW ===== */
 .dashboard-container {
   padding: 16px;
-  padding-top: 44px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -551,12 +549,6 @@ html, body {
   color: var(--text-dim);
 }
 
-/* Internship progress */
-.progress-meta {
-  font-size: 22px;
-  font-weight: 700;
-}
-
 .progress-bar-wrap {
   background: var(--surface3);
   border-radius: 99px;
@@ -570,11 +562,6 @@ html, body {
   border-radius: 99px;
   transition: width 0.6s ease;
   width: 0%;
-}
-
-.progress-dates {
-  font-size: 12px;
-  color: var(--text-dim);
 }
 
 /* Savings */
@@ -600,6 +587,14 @@ html, body {
 .savings-sub {
   font-size: 12px;
   color: var(--text-dim);
+}
+
+.savings-stretch {
+  font-size: 11px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 2px;
 }
 
 /* Month label */
@@ -683,32 +678,9 @@ html, body {
   font-weight: 600;
 }
 
-/* Pay summary */
-.pay-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-}
-
-.pay-val {
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.pay-neg { color: #f87171; }
-.pay-pos { color: var(--green); }
-
-.pay-divider {
-  border-top: 1px solid var(--border);
-  padding-top: 10px;
-  margin-top: 2px;
-}
-
 /* ===== HISTORY VIEW ===== */
 .history-container {
   padding: 16px;
-  padding-top: 44px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -766,7 +738,10 @@ html, body {
   text-transform: uppercase;
 }
 
-.cat-food { color: var(--red); }
+.cat-dining-out { color: var(--red); }
+.cat-cafeteria  { color: var(--red); }
+.cat-housing    { color: var(--yellow); }
+.cat-groceries  { color: var(--green); }
 .cat-transport { color: #3b82f6; }
 .cat-misc { color: #a855f7; }
 

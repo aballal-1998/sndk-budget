@@ -1,12 +1,16 @@
 'use strict';
 
 // ===== CONSTANTS =====
+const MS_PER_DAY         = 1000 * 60 * 60 * 24;
+const AVG_DAYS_PER_MONTH = 30.44;
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
 const INTERNSHIP_START = new Date('2026-06-02');
 const INTERNSHIP_END   = new Date('2026-08-21');
-const INTERNSHIP_WEEKS = 11.25;
-const SAVINGS_GOAL     = 4400;
+const INTERNSHIP_DAYS  = Math.round((INTERNSHIP_END - INTERNSHIP_START) / MS_PER_DAY); // 80
+
 const MONTHLY_TAKEHOME = 4978;
-const HOUSING_MONTHLY  = 2863;
+const TAX_REFUND_EST   = 1750;
 
 const CAT_ICON = { Housing: '🏨', Groceries: '🛒', Cafeteria: '🍽️', 'Dining Out': '🍔', Transport: '🚗', Misc: '📦' };
 
@@ -18,6 +22,13 @@ const BUDGET_GROUPS = [
   { label: 'Transport',  cats: ['Transport'],             budget: 25,   id: 'transport' },
   { label: 'Misc',       cats: ['Misc'],                  budget: 290,  id: 'misc' },
 ];
+const MONTHLY_BUDGET_TOTAL = BUDGET_GROUPS.reduce((s, g) => s + g.budget, 0); // 3728
+
+// Plan = full internship, monthly figures scaled to internship length
+const PLAN_TAKEHOME_TOTAL = Math.round(MONTHLY_TAKEHOME * (INTERNSHIP_DAYS / AVG_DAYS_PER_MONTH));     // ~$13,084
+const PLAN_SPEND_TOTAL    = Math.round(MONTHLY_BUDGET_TOTAL * (INTERNSHIP_DAYS / AVG_DAYS_PER_MONTH)); // ~$9,800
+const SAVINGS_GOAL        = PLAN_TAKEHOME_TOTAL - PLAN_SPEND_TOTAL;                                    // ~$3,284
+const SAVINGS_STRETCH     = SAVINGS_GOAL + TAX_REFUND_EST;                                             // ~$5,034
 
 // ===== STATE =====
 let currentCategory = 'Groceries';
@@ -213,8 +224,7 @@ function renderDashboard() {
   // Monthly spend
   const now = new Date();
   const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('month-label').textContent = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('month-label').textContent = `${MONTH_NAMES[now.getMonth()]} ${now.getFullYear()}`;
 
   const monthExpenses = expenses.filter(e => e.date.startsWith(monthKey));
   const catTotals = {};
@@ -231,20 +241,18 @@ function renderDashboard() {
 
   const totalSpend = Object.values(catTotals).reduce((s, v) => s + v, 0);
   document.getElementById('dash-total-spend').textContent =
-    `$${totalSpend.toFixed(0)} / $3,728`;
+    `$${totalSpend.toFixed(0)} / $${MONTHLY_BUDGET_TOTAL.toLocaleString()}`;
 }
 
 // ===== BANNER =====
 function renderBanner() {
-  const today = new Date();
   const totalMs = INTERNSHIP_END - INTERNSHIP_START;
-  const elapsedMs = Math.max(0, Math.min(today - INTERNSHIP_START, totalMs));
-  const totalDays = Math.round(totalMs / (1000 * 60 * 60 * 24));
-  const daysDone = Math.min(Math.max(0, Math.floor(elapsedMs / (1000 * 60 * 60 * 24))) + 1, totalDays);
+  const elapsedMs = Math.max(0, Math.min(new Date() - INTERNSHIP_START, totalMs));
+  const daysDone = Math.min(Math.floor(elapsedMs / MS_PER_DAY) + 1, INTERNSHIP_DAYS);
   const pct = (elapsedMs / totalMs * 100).toFixed(1);
 
   document.querySelectorAll('.banner-bar-fill').forEach(el => el.style.width = pct + '%');
-  document.querySelectorAll('.progress-banner .banner-label').forEach(el => el.textContent = `Day ${daysDone} of ${totalDays}`);
+  document.querySelectorAll('.progress-banner .banner-label').forEach(el => el.textContent = `Day ${daysDone} of ${INTERNSHIP_DAYS}`);
 }
 
 // ===== PAYCHECKS =====
@@ -279,11 +287,6 @@ function deletePaycheck(id) {
 }
 
 // ===== PAY =====
-const PLAN_TAKEHOME_TOTAL = Math.round(MONTHLY_TAKEHOME * (80 / 30.44)); // ~$13,084
-const PLAN_SPEND_TOTAL    = Math.round((3728) * (80 / 30.44));           // ~$9,800
-const PLAN_GROSS_TOTAL    = 20495;
-const TAX_REFUND_EST      = 1750;
-
 function renderPay() {
   const expenses  = getExpenses();
   const paychecks = getPaychecks();
@@ -294,9 +297,11 @@ function renderPay() {
 
   // Savings goal card
   document.getElementById('pay-savings-live').textContent = '$' + actualSavings.toFixed(0);
+  document.getElementById('pay-savings-target').textContent = `of $${SAVINGS_GOAL.toLocaleString()} goal`;
   document.getElementById('savings-bar').style.width = (Math.min(actualSavings / SAVINGS_GOAL, 1) * 100).toFixed(1) + '%';
   const remaining = Math.max(0, SAVINGS_GOAL - actualSavings);
   document.getElementById('pay-savings-sub').textContent = remaining > 0 ? `$${remaining.toFixed(0)} to go` : 'Goal reached!';
+  document.getElementById('pay-savings-stretch').textContent = `Stretch: ~$${SAVINGS_STRETCH.toLocaleString()} incl. est. tax refund`;
 
   // Plan vs Actual
   document.getElementById('pva-takehome-plan').textContent  = '$' + PLAN_TAKEHOME_TOTAL.toLocaleString();
@@ -357,7 +362,7 @@ function renderHistory() {
     <div class="history-item" id="item-${e.id}">
       <div class="history-item-icon">${CAT_ICON[e.category]}</div>
       <div class="history-item-body">
-        <div class="history-item-cat cat-${e.category.toLowerCase()}">${e.category}</div>
+        <div class="history-item-cat cat-${e.category.toLowerCase().replace(/\s+/g, '-')}">${e.category}</div>
         ${e.note ? `<div class="history-item-note">${escHtml(e.note)}</div>` : ''}
         <div class="history-item-date">${formatDate(e.date)}</div>
       </div>
@@ -453,8 +458,7 @@ function exportCSV() {
 // ===== UTILS =====
 function formatDate(iso) {
   const [y, m, d] = iso.split('-');
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${months[parseInt(m,10)-1]} ${parseInt(d,10)}, ${y}`;
+  return `${MONTH_NAMES[parseInt(m,10)-1]} ${parseInt(d,10)}, ${y}`;
 }
 
 function escHtml(str) {
