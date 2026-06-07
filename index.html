@@ -282,6 +282,37 @@
     </div>
   </div>
 
+  <!-- EDIT MODAL -->
+  <div id="edit-overlay" class="edit-overlay hidden" onclick="closeEditModal()"></div>
+  <div id="edit-sheet" class="edit-sheet hidden">
+    <div class="edit-sheet-handle"></div>
+    <div class="edit-sheet-title">Edit Expense</div>
+
+    <div class="section-label">Category</div>
+    <div class="category-grid" id="edit-cat-grid">
+      <button class="cat-btn" data-cat="Groceries" onclick="editSelectCat(this)"><span class="cat-icon">🛒</span><span>Groceries</span></button>
+      <button class="cat-btn" data-cat="Cafeteria" onclick="editSelectCat(this)"><span class="cat-icon">🍽️</span><span>Cafeteria</span></button>
+      <button class="cat-btn" data-cat="Dining Out" onclick="editSelectCat(this)"><span class="cat-icon">🍔</span><span>Dining Out</span></button>
+      <button class="cat-btn" data-cat="Transport" onclick="editSelectCat(this)"><span class="cat-icon">🚗</span><span>Transport</span></button>
+      <button class="cat-btn" data-cat="Misc" onclick="editSelectCat(this)"><span class="cat-icon">📦</span><span>Misc</span></button>
+      <button class="cat-btn" data-cat="Housing" onclick="editSelectCat(this)"><span class="cat-icon">🏨</span><span>Housing</span></button>
+    </div>
+
+    <div class="section-label">Amount</div>
+    <input type="number" id="edit-amount" class="note-input" step="0.01" min="0" placeholder="0.00" />
+
+    <div class="section-label">Note</div>
+    <input type="text" id="edit-note" class="note-input" maxlength="40" placeholder="Note (optional)" />
+
+    <div class="section-label">Date</div>
+    <input type="date" id="edit-date" class="date-input" />
+
+    <div class="edit-actions">
+      <button class="export-btn" onclick="closeEditModal()">Cancel</button>
+      <button class="log-btn" onclick="saveEdit()">Save</button>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>

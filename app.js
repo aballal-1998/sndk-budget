@@ -301,9 +301,60 @@ function renderHistory() {
         <div class="history-item-date">${formatDate(e.date)}</div>
       </div>
       <div class="history-item-amount">$${e.amount.toFixed(2)}</div>
+      <button class="history-delete-btn" onclick="editExpense(${e.id})" title="Edit">✎</button>
       <button class="history-delete-btn" onclick="deleteExpense(${e.id})" title="Delete">×</button>
     </div>
   `).join('');
+}
+
+let editingId = null;
+
+function editExpense(id) {
+  const expense = getExpenses().find(e => e.id === id);
+  if (!expense) return;
+  editingId = id;
+
+  document.querySelectorAll('#edit-cat-grid .cat-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.cat === expense.category);
+  });
+  document.getElementById('edit-amount').value = expense.amount.toFixed(2);
+  document.getElementById('edit-note').value = expense.note || '';
+  document.getElementById('edit-date').value = expense.date;
+
+  document.getElementById('edit-overlay').classList.remove('hidden');
+  document.getElementById('edit-sheet').classList.remove('hidden');
+}
+
+function editSelectCat(btn) {
+  document.querySelectorAll('#edit-cat-grid .cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function saveEdit() {
+  const cat = document.querySelector('#edit-cat-grid .cat-btn.active');
+  const amount = parseFloat(document.getElementById('edit-amount').value);
+  if (!cat || !amount || amount <= 0) return;
+
+  const expenses = getExpenses().map(e => {
+    if (e.id !== editingId) return e;
+    return {
+      ...e,
+      category: cat.dataset.cat,
+      amount,
+      note: document.getElementById('edit-note').value.trim(),
+      date: document.getElementById('edit-date').value || e.date,
+    };
+  });
+
+  saveExpenses(expenses);
+  closeEditModal();
+  renderHistory();
+}
+
+function closeEditModal() {
+  editingId = null;
+  document.getElementById('edit-overlay').classList.add('hidden');
+  document.getElementById('edit-sheet').classList.add('hidden');
 }
 
 function deleteExpense(id) {
