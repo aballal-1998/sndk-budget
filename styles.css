@@ -816,3 +816,217 @@ html, body {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* ===== RECAP VIEW ===== */
+.recap-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.recap-week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 14px 16px 8px;
+}
+
+.recap-nav-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  color: var(--text);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.recap-nav-btn:active { background: var(--surface3); }
+.recap-nav-btn:disabled { opacity: 0.25; pointer-events: none; }
+
+.recap-week-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.recap-cards {
+  flex: 1;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.recap-cards::-webkit-scrollbar { display: none; }
+
+.recap-card {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+}
+
+.recap-card-inner {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Card 1 — Total */
+#recap-card-0 {
+  background: radial-gradient(ellipse at 50% 40%, rgba(204,0,0,0.12) 0%, transparent 70%);
+}
+
+.recap-top-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.recap-big-number {
+  font-size: 72px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -3px;
+  line-height: 1.1;
+  margin: 8px 0;
+}
+
+.recap-bottom-label {
+  font-size: 14px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+/* Card 2 — Breakdown */
+.recap-breakdown-inner {
+  align-items: stretch;
+}
+
+.recap-card-heading {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.recap-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.recap-breakdown-row {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.recap-breakdown-row.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.recap-breakdown-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.recap-breakdown-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.recap-breakdown-icon { font-size: 18px; }
+
+.recap-breakdown-amount {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.recap-breakdown-bar {
+  height: 6px;
+  border-radius: 99px;
+  background: var(--surface3);
+  overflow: hidden;
+}
+
+.recap-breakdown-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  width: 0%;
+  transition: width 0.8s ease;
+}
+
+/* Card 3 — Verdict */
+#recap-card-2.recap-positive {
+  background: radial-gradient(ellipse at 50% 50%, rgba(34,197,94,0.08) 0%, transparent 70%);
+}
+
+#recap-card-2.recap-negative {
+  background: radial-gradient(ellipse at 50% 50%, rgba(204,0,0,0.08) 0%, transparent 70%);
+}
+
+.recap-verdict {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.4;
+  letter-spacing: -0.5px;
+  white-space: pre-line;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.recap-verdict.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Dots */
+.recap-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 0 20px;
+}
+
+.recap-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--surface3);
+  transition: background 0.3s, transform 0.3s;
+}
+
+.recap-dot.active {
+  background: var(--red);
+  transform: scale(1.3);
+}

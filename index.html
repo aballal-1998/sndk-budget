@@ -66,6 +66,10 @@
       <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
       <span>Pay</span>
     </button>
+    <button class="nav-btn" data-view="recap" onclick="switchView('recap')">
+      <svg viewBox="0 0 24 24"><path d="M4 9h4v11H4zm6-5h4v16h-4zm6 8h4v8h-4z"/></svg>
+      <span>Recap</span>
+    </button>
   </nav>
 
   <!-- VIEW: LOG EXPENSE -->
@@ -315,6 +319,52 @@
         <div id="paycheck-list" class="history-list"></div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- VIEW: RECAP -->
+  <div id="view-recap" class="view">
+    <header class="app-header">
+      <div class="logo-mark">SNDK</div>
+      <h1>Recap</h1>
+    </header>
+    <div class="progress-banner">
+      <div class="banner-row">
+        <div class="banner-bar-wrap"><div class="banner-bar-fill"></div></div>
+        <span class="banner-label">Day — of —</span>
+      </div>
+    </div>
+    <div class="recap-container">
+      <div class="recap-week-nav">
+        <button class="recap-nav-btn" onclick="recapChangeWeek(-1)">&#8249;</button>
+        <span class="recap-week-label" id="recap-week-label"></span>
+        <button class="recap-nav-btn" id="recap-next-btn" onclick="recapChangeWeek(1)">&#8250;</button>
+      </div>
+      <div class="recap-cards" id="recap-cards">
+        <div class="recap-card" id="recap-card-0">
+          <div class="recap-card-inner">
+            <div class="recap-top-label">You spent</div>
+            <div class="recap-big-number" id="recap-total">$0</div>
+            <div class="recap-bottom-label">this week</div>
+          </div>
+        </div>
+        <div class="recap-card" id="recap-card-1">
+          <div class="recap-card-inner recap-breakdown-inner">
+            <div class="recap-card-heading">Outside Housing</div>
+            <div class="recap-breakdown" id="recap-breakdown"></div>
+          </div>
+        </div>
+        <div class="recap-card" id="recap-card-2">
+          <div class="recap-card-inner">
+            <div class="recap-verdict" id="recap-verdict"></div>
+          </div>
+        </div>
+      </div>
+      <div class="recap-dots">
+        <div class="recap-dot active"></div>
+        <div class="recap-dot"></div>
+        <div class="recap-dot"></div>
+      </div>
     </div>
   </div>
 

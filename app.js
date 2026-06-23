@@ -146,6 +146,7 @@ function switchView(view) {
   if (view === 'dashboard') renderDashboard();
   if (view === 'history') renderHistory();
   if (view === 'pay') renderPay();
+  if (view === 'recap') renderRecap();
 }
 
 // ===== LOG VIEW =====
@@ -455,7 +456,154 @@ function exportCSV() {
   URL.revokeObjectURL(url);
 }
 
+// ===== RECAP =====
+let recapWeekOffset = 0;
+let recapAnimated = new Set();
+
+function getWeekBounds(offset) {
+  const now = new Date();
+  const day = now.getDay();
+  const diffToMon = day === 0 ? -6 : 1 - day;
+  const mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMon + offset * 7);
+  const sun = new Date(mon);
+  sun.setDate(sun.getDate() + 6);
+  return {
+    start: dateStr(mon),
+    end: dateStr(sun),
+    label: mon.getMonth() === sun.getMonth()
+      ? MONTH_NAMES[mon.getMonth()] + ' ' + mon.getDate() + '–' + sun.getDate()
+      : MONTH_NAMES[mon.getMonth()] + ' ' + mon.getDate() + '–' + MONTH_NAMES[sun.getMonth()] + ' ' + sun.getDate()
+  };
+}
+
+function recapChangeWeek(dir) {
+  recapWeekOffset += dir;
+  if (recapWeekOffset > 0) recapWeekOffset = 0;
+  document.getElementById('recap-cards').scrollLeft = 0;
+  renderRecap();
+}
+
+function renderRecap() {
+  recapAnimated = new Set([0]);
+  const { start, end, label } = getWeekBounds(recapWeekOffset);
+  document.getElementById('recap-week-label').textContent = 'Week of ' + label;
+  document.getElementById('recap-next-btn').disabled = recapWeekOffset >= 0;
+
+  const expenses = getExpenses().filter(e => e.date >= start && e.date <= end);
+  const total = expenses.reduce((s, e) => s + e.amount, 0);
+
+  const totalEl = document.getElementById('recap-total');
+  if (total > 0) countUp(totalEl, total);
+  else totalEl.textContent = '$0';
+
+  const grouped = {};
+  expenses.forEach(e => {
+    const g = BUDGET_GROUPS.find(b => b.cats.includes(e.category));
+    if (g) grouped[g.id] = (grouped[g.id] || 0) + e.amount;
+  });
+
+  const colors = { groceries: '#22c55e', dining: '#cc0000', transport: '#3b82f6', misc: '#a855f7' };
+  const groupIcon = { groceries: '\u{1F6D2}', dining: '\u{1F37D}️', transport: '\u{1F697}', misc: '\u{1F4E6}' };
+
+  // Housing is excluded — it's the dominant known quantity; the breakdown shows discretionary spend
+  const rows = BUDGET_GROUPS
+    .filter(g => g.id !== 'housing' && (grouped[g.id] || 0) > 0)
+    .sort((a, b) => (grouped[b.id] || 0) - (grouped[a.id] || 0));
+  const maxVal = Math.max(...rows.map(g => grouped[g.id]), 1);
+
+  const brkEl = document.getElementById('recap-breakdown');
+  brkEl.innerHTML = rows.length === 0
+    ? '<div style="text-align:center;color:var(--text-muted);padding:20px">No spending outside housing</div>'
+    : rows.map((g) => `
+        <div class="recap-breakdown-row">
+          <div class="recap-breakdown-info">
+            <div class="recap-breakdown-left">
+              <span class="recap-breakdown-icon">${groupIcon[g.id]}</span>
+              <span>${g.label}</span>
+            </div>
+            <div class="recap-breakdown-amount" style="color:${colors[g.id]}">$${grouped[g.id].toFixed(0)}</div>
+          </div>
+          <div class="recap-breakdown-bar">
+            <div class="recap-breakdown-bar-fill" data-width="${(grouped[g.id] / maxVal * 100).toFixed(1)}" style="background:${colors[g.id]}"></div>
+          </div>
+        </div>`).join('');
+
+  const verdict = generateVerdict(expenses);
+  const verdictEl = document.getElementById('recap-verdict');
+  verdictEl.textContent = verdict.text;
+  verdictEl.classList.remove('visible');
+  const card2El = document.getElementById('recap-card-2');
+  card2El.classList.remove('recap-positive', 'recap-negative');
+  card2El.classList.add(verdict.positive ? 'recap-positive' : 'recap-negative');
+
+  const cards = document.getElementById('recap-cards');
+  cards.onscroll = handleRecapScroll;
+  document.querySelectorAll('.recap-dot').forEach((d, i) => d.classList.toggle('active', i === 0));
+}
+
+function countUp(el, target) {
+  const dur = 1200, t0 = performance.now();
+  (function tick(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    el.textContent = '$' + Math.round(target * (1 - Math.pow(1 - p, 3))).toLocaleString();
+    if (p < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+
+function generateVerdict(expenses) {
+  if (expenses.length === 0) return { text: 'Nothing logged\nthis week', positive: true };
+  const nonHousing = expenses.filter(e => e.category !== 'Housing');
+  const nhTotal = nonHousing.reduce((s, e) => s + e.amount, 0);
+  if (nonHousing.length === 0) return { text: 'Just rent this week\n$0 outside housing', positive: true };
+
+  const cats = {};
+  nonHousing.forEach(e => { cats[e.category] = (cats[e.category] || 0) + e.amount; });
+  const miscTotal = cats['Misc'] || 0;
+  const diningTotal = (cats['Cafeteria'] || 0) + (cats['Dining Out'] || 0);
+  const housingBudget = BUDGET_GROUPS.find(g => g.id === 'housing').budget;
+  const weeklyBudget = (MONTHLY_BUDGET_TOTAL - housingBudget) * 7 / AVG_DAYS_PER_MONTH;
+  const delta = weeklyBudget - nhTotal;
+
+  if (miscTotal > nhTotal * 0.5 && miscTotal > 50)
+    return { text: 'Misc-heavy week\n$' + miscTotal.toFixed(0) + ' in miscellaneous', positive: delta >= 0 };
+  if (diningTotal > nhTotal * 0.6)
+    return { text: 'Foodie week\n$' + diningTotal.toFixed(0) + ' on dining', positive: delta >= 0 };
+  if (delta >= 20)
+    return { text: '$' + Math.round(delta) + ' under budget\nSolid week', positive: true };
+  if (delta >= -10)
+    return { text: 'Right on pace\nSteady week', positive: true };
+  return { text: '$' + Math.round(Math.abs(delta)) + ' over pace\nTighten up next week', positive: false };
+}
+
+function handleRecapScroll() {
+  const cards = document.getElementById('recap-cards');
+  const idx = Math.round(cards.scrollLeft / cards.offsetWidth);
+  document.querySelectorAll('.recap-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+  triggerRecapAnimation(idx);
+}
+
+function triggerRecapAnimation(idx) {
+  if (recapAnimated.has(idx)) return;
+  recapAnimated.add(idx);
+  if (idx === 1) {
+    document.querySelectorAll('.recap-breakdown-row').forEach((row, i) => {
+      setTimeout(() => {
+        row.classList.add('visible');
+        const fill = row.querySelector('.recap-breakdown-bar-fill');
+        if (fill) fill.style.width = fill.dataset.width + '%';
+      }, i * 120 + 100);
+    });
+  }
+  if (idx === 2) {
+    setTimeout(() => document.getElementById('recap-verdict').classList.add('visible'), 300);
+  }
+}
+
 // ===== UTILS =====
+function dateStr(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
 function formatDate(iso) {
   const [y, m, d] = iso.split('-');
   return `${MONTH_NAMES[parseInt(m,10)-1]} ${parseInt(d,10)}, ${y}`;
