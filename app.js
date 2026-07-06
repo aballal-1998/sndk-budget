@@ -9,7 +9,7 @@ const INTERNSHIP_START = new Date('2026-06-02');
 const INTERNSHIP_END   = new Date('2026-08-21');
 const INTERNSHIP_DAYS  = Math.round((INTERNSHIP_END - INTERNSHIP_START) / MS_PER_DAY); // 80
 
-const MONTHLY_TAKEHOME = 4978;
+const MONTHLY_TAKEHOME = 5290;
 const TAX_REFUND_EST   = 1750;
 
 const CAT_ICON = { Housing: '🏨', Groceries: '🛒', Cafeteria: '🍽️', 'Dining Out': '🍔', Transport: '🚗', Misc: '📦' };
